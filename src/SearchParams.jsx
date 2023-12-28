@@ -32,6 +32,13 @@ const SearchParams = () => {
           requestPets();
         }}
       >
+        <label htmlFor="location">Location</label>
+        <input
+          onChange={(e) => setLocation(e.target.value)}
+          id="location"
+          value={location}
+          placeholder="Search Locations"
+        />
         <label htmlFor="animal">
           Animal
           <select
@@ -63,13 +70,7 @@ const SearchParams = () => {
             ))}
           </select>
         </label>
-        <label htmlFor="location">Location</label>
-        <input
-          onChange={(e) => setLocation(e.target.value)}
-          id="location"
-          value={location}
-          placeholder="Search Locations"
-        />
+
         <button>Submit</button>
       </form>
       <Results pets={pets} />

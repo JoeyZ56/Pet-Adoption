@@ -1,4 +1,4 @@
-import Pet from "./pet";
+import Pet from "./Pet";
 
 const Results = ({ pets }) => {
   return (
@@ -13,6 +13,7 @@ const Results = ({ pets }) => {
             breed={pet.breed}
             images={pet.images}
             location={`${pet.city}, ${pet.state}`}
+            id={pet.id}
             key={pet.id}
           />
         ))
