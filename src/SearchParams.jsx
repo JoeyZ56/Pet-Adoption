@@ -1,21 +1,46 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import Results from "./Results";
+import useBreedList from "./useBreedList";
 
 const ANIMALS = ["bird", "cat", "dog", "rabbit", "reptile"];
 
 const SearchParams = () => {
   const [location, setLocation] = useState("");
   const [animal, setAnimal] = useState("");
+  const [breed, setBreed] = useState("");
+  const [pets, setPets] = useState([]);
+
+  const [breeds] = useBreedList(animal);
+
+  useEffect(() => {
+    requestPets();
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  async function requestPets() {
+    const res = await fetch(
+      `http://pets-v2.dev-apis.com/pets?animal=${animal}&location=${location}&breed=${breed}`
+    );
+    const json = await res.json();
+    setPets(json.pets);
+  }
 
   return (
     <div className="search-params">
-      <form>
-        <label htmlFor="location">Location</label>
+      <form
+        onSubmit={(e) => {
+          e.preventDefault();
+          requestPets();
+        }}
+      >
         <label htmlFor="animal">
           Animal
           <select
             id="animal"
             value={animal}
-            onChange={(e) => setAnimal(e.target.value)}
+            onChange={(e) => {
+              setAnimal(e.target.value);
+              setBreed("");
+            }}
           >
             <option />
             {ANIMALS.map((animal) => (
@@ -23,6 +48,22 @@ const SearchParams = () => {
             ))}
           </select>
         </label>
+        <label htmlFor="breed">
+          Breed
+          <select
+            id="breed"
+            // disabled={breeds.length === 0}
+            value={breed}
+            onChange={(e) => setBreed(e.target.value)}
+            disabled={!breeds.length}
+          >
+            <option />
+            {breeds.map((breed) => (
+              <option key={breed}>{breed}</option>
+            ))}
+          </select>
+        </label>
+        <label htmlFor="location">Location</label>
         <input
           onChange={(e) => setLocation(e.target.value)}
           id="location"
@@ -31,6 +72,7 @@ const SearchParams = () => {
         />
         <button>Submit</button>
       </form>
+      <Results pets={pets} />
     </div>
   );
 };
